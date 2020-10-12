@@ -1,0 +1,29 @@
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { TourService } from 'ngx-tour-core';
+import { NgbTourService } from './ng-bootstrap-tour.service';
+import { TourAnchorNgBootstrapDirective, TourAnchorNgBootstrapPopoverDirective } from './tour-anchor.directive';
+import { TourStepTemplateComponent } from './tour-step-template.component';
+import { TourStepTemplateService } from './tour-step-template.service';
+export { TourAnchorNgBootstrapDirective, TourAnchorNgBootstrapPopoverDirective, TourStepTemplateComponent, NgbTourService };
+export class TourNgBootstrapModule {
+    static forRoot() {
+        return {
+            ngModule: TourNgBootstrapModule,
+            providers: [
+                TourStepTemplateService,
+                TourService,
+                NgbTourService
+            ],
+        };
+    }
+}
+TourNgBootstrapModule.decorators = [
+    { type: NgModule, args: [{
+                declarations: [TourAnchorNgBootstrapDirective, TourAnchorNgBootstrapPopoverDirective, TourStepTemplateComponent],
+                exports: [TourAnchorNgBootstrapDirective, TourAnchorNgBootstrapPopoverDirective, TourStepTemplateComponent],
+                imports: [CommonModule, NgbPopoverModule],
+            },] }
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibmctYm9vdHN0cmFwLm1vZHVsZS5qcyIsInNvdXJjZVJvb3QiOiJDOi9zb3VyY2UvcmVwb3Mvbmd4LXRvdXIvcHJvamVjdHMvbmd4LXRvdXItbmctYm9vdHN0cmFwL3NyYy8iLCJzb3VyY2VzIjpbImxpYi9uZy1ib290c3RyYXAubW9kdWxlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE9BQU8sRUFBRSxZQUFZLEVBQUUsTUFBTSxpQkFBaUIsQ0FBQztBQUMvQyxPQUFPLEVBQXVCLFFBQVEsRUFBRSxNQUFNLGVBQWUsQ0FBQztBQUM5RCxPQUFPLEVBQUUsZ0JBQWdCLEVBQUUsTUFBTSw0QkFBNEIsQ0FBQztBQUM5RCxPQUFPLEVBQUMsV0FBVyxFQUFDLE1BQU0sZUFBZSxDQUFDO0FBRTFDLE9BQU8sRUFBRSxjQUFjLEVBQUUsTUFBTSw2QkFBNkIsQ0FBQztBQUM3RCxPQUFPLEVBQUUsOEJBQThCLEVBQUUscUNBQXFDLEVBQUUsTUFBTSx5QkFBeUIsQ0FBQztBQUNoSCxPQUFPLEVBQUUseUJBQXlCLEVBQUUsTUFBTSxnQ0FBZ0MsQ0FBQztBQUMzRSxPQUFPLEVBQUUsdUJBQXVCLEVBQUUsTUFBTSw4QkFBOEIsQ0FBQztBQUV2RSxPQUFPLEVBQUUsOEJBQThCLEVBQUUscUNBQXFDLEVBQUUseUJBQXlCLEVBQUUsY0FBYyxFQUFFLENBQUM7QUFPNUgsTUFBTSxPQUFPLHFCQUFxQjtJQUN6QixNQUFNLENBQUMsT0FBTztRQUNuQixPQUFPO1lBQ0wsUUFBUSxFQUFFLHFCQUFxQjtZQUMvQixTQUFTLEVBQUU7Z0JBQ1QsdUJBQXVCO2dCQUN2QixXQUFXO2dCQUNYLGNBQWM7YUFDZjtTQUNGLENBQUM7SUFDSixDQUFDOzs7WUFmRixRQUFRLFNBQUM7Z0JBQ1IsWUFBWSxFQUFFLENBQUMsOEJBQThCLEVBQUUscUNBQXFDLEVBQUUseUJBQXlCLENBQUM7Z0JBQ2hILE9BQU8sRUFBRSxDQUFDLDhCQUE4QixFQUFFLHFDQUFxQyxFQUFFLHlCQUF5QixDQUFDO2dCQUMzRyxPQUFPLEVBQUUsQ0FBQyxZQUFZLEVBQUUsZ0JBQWdCLENBQUM7YUFDMUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBDb21tb25Nb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb21tb24nO1xuaW1wb3J0IHsgTW9kdWxlV2l0aFByb3ZpZGVycywgTmdNb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IE5nYlBvcG92ZXJNb2R1bGUgfSBmcm9tICdAbmctYm9vdHN0cmFwL25nLWJvb3RzdHJhcCc7XG5pbXBvcnQge1RvdXJTZXJ2aWNlfSBmcm9tICduZ3gtdG91ci1jb3JlJztcblxuaW1wb3J0IHsgTmdiVG91clNlcnZpY2UgfSBmcm9tICcuL25nLWJvb3RzdHJhcC10b3VyLnNlcnZpY2UnO1xuaW1wb3J0IHsgVG91ckFuY2hvck5nQm9vdHN0cmFwRGlyZWN0aXZlLCBUb3VyQW5jaG9yTmdCb290c3RyYXBQb3BvdmVyRGlyZWN0aXZlIH0gZnJvbSAnLi90b3VyLWFuY2hvci5kaXJlY3RpdmUnO1xuaW1wb3J0IHsgVG91clN0ZXBUZW1wbGF0ZUNvbXBvbmVudCB9IGZyb20gJy4vdG91ci1zdGVwLXRlbXBsYXRlLmNvbXBvbmVudCc7XG5pbXBvcnQgeyBUb3VyU3RlcFRlbXBsYXRlU2VydmljZSB9IGZyb20gJy4vdG91ci1zdGVwLXRlbXBsYXRlLnNlcnZpY2UnO1xuXG5leHBvcnQgeyBUb3VyQW5jaG9yTmdCb290c3RyYXBEaXJlY3RpdmUsIFRvdXJBbmNob3JOZ0Jvb3RzdHJhcFBvcG92ZXJEaXJlY3RpdmUsIFRvdXJTdGVwVGVtcGxhdGVDb21wb25lbnQsIE5nYlRvdXJTZXJ2aWNlIH07XG5cbkBOZ01vZHVsZSh7XG4gIGRlY2xhcmF0aW9uczogW1RvdXJBbmNob3JOZ0Jvb3RzdHJhcERpcmVjdGl2ZSwgVG91ckFuY2hvck5nQm9vdHN0cmFwUG9wb3ZlckRpcmVjdGl2ZSwgVG91clN0ZXBUZW1wbGF0ZUNvbXBvbmVudF0sXG4gIGV4cG9ydHM6IFtUb3VyQW5jaG9yTmdCb290c3RyYXBEaXJlY3RpdmUsIFRvdXJBbmNob3JOZ0Jvb3RzdHJhcFBvcG92ZXJEaXJlY3RpdmUsIFRvdXJTdGVwVGVtcGxhdGVDb21wb25lbnRdLFxuICBpbXBvcnRzOiBbQ29tbW9uTW9kdWxlLCBOZ2JQb3BvdmVyTW9kdWxlXSxcbn0pXG5leHBvcnQgY2xhc3MgVG91ck5nQm9vdHN0cmFwTW9kdWxlIHtcbiAgcHVibGljIHN0YXRpYyBmb3JSb290KCk6IE1vZHVsZVdpdGhQcm92aWRlcnM8VG91ck5nQm9vdHN0cmFwTW9kdWxlPiB7XG4gICAgcmV0dXJuIHtcbiAgICAgIG5nTW9kdWxlOiBUb3VyTmdCb290c3RyYXBNb2R1bGUsXG4gICAgICBwcm92aWRlcnM6IFtcbiAgICAgICAgVG91clN0ZXBUZW1wbGF0ZVNlcnZpY2UsXG4gICAgICAgIFRvdXJTZXJ2aWNlLFxuICAgICAgICBOZ2JUb3VyU2VydmljZVxuICAgICAgXSxcbiAgICB9O1xuICB9XG59XG4iXX0=
