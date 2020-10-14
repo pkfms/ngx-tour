@@ -5,6 +5,7 @@ import {TourService} from 'ngx-tour-core';
 
 import { NgbTourService } from './ng-bootstrap-tour.service';
 import { TourAnchorNgBootstrapDirective, TourAnchorNgBootstrapPopoverDirective } from './tour-anchor.directive';
+import { TourBackdropService } from './tour-backdrop.service';
 import { TourStepTemplateComponent } from './tour-step-template.component';
 import { TourStepTemplateService } from './tour-step-template.service';
 
@@ -21,6 +22,7 @@ export class TourNgBootstrapModule {
       ngModule: TourNgBootstrapModule,
       providers: [
         TourStepTemplateService,
+        TourBackdropService,
         TourService,
         NgbTourService
       ],
