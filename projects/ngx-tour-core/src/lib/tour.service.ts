@@ -4,7 +4,7 @@ import type {UrlSegment} from '@angular/router';
 
 import { TourAnchorDirective } from './tour-anchor.directive';
 import { Subject, Observable, merge as mergeStatic } from 'rxjs';
-import { first, map, filter } from 'rxjs/operators';
+import { first, map, filter, take, takeUntil } from 'rxjs/operators';
 
 export interface IStepOption {
   stepId?: string;
@@ -181,8 +181,9 @@ export class TourService<T extends IStepOption = IStepOption> {
   }
 
   public register(anchorId: string, anchor: TourAnchorDirective): void {
-    if (!anchorId)
+    if (!anchorId) {
       return;
+    }
     if (this.anchors[anchorId]) {
       throw new Error('anchorId ' + anchorId + ' already registered!');
     }
@@ -191,8 +192,9 @@ export class TourService<T extends IStepOption = IStepOption> {
   }
 
   public unregister(anchorId: string): void {
-    if (!anchorId)
+    if (!anchorId) {
       return;
+    }
     delete this.anchors[anchorId];
     this.anchorUnregister$.next(anchorId);
   }
@@ -234,12 +236,12 @@ export class TourService<T extends IStepOption = IStepOption> {
     }
   }
 
-  private setCurrentStep(step: T): void {
+  private async setCurrentStep(step: T): Promise<void> {
     if (this.currentStep) {
       this.hideStep(this.currentStep);
     }
     this.currentStep = step;
-    this.showStep(this.currentStep);
+    await this.showStep(this.currentStep);
     this.router.events
       .pipe(filter(event => event instanceof NavigationStart), first())
       .subscribe(() => {
@@ -249,17 +251,27 @@ export class TourService<T extends IStepOption = IStepOption> {
       });
   }
 
-  private showStep(step: T): void {
-    const anchor = this.anchors[step && step.anchorId];
-    if (!anchor) {
-      console.warn(
-        'Can\'t attach to unregistered anchor with id ' + step.anchorId
-      );
-      this.end();
-      return;
+  private async showStep(step: T): Promise<void> {
+    let anchor = this.anchors[step && step.anchorId];
+    if (anchor) {
+      // Anchor is registered, continue tour
+      anchor.showTourStep(step);
+      this.stepShow$.next(step);
+    } else {
+      console.warn('Can\'t attach to unregistered anchor with id ' + step.anchorId);
+      // Wait for anchor to register itself and continue
+      anchor = await this.anchorRegister$.pipe(
+        filter(anchorId => anchorId === step.anchorId),
+        map(anchorId => this.anchors[anchorId]),
+        takeUntil(this.end$),
+        take(1)
+      ).toPromise();
+
+      if (anchor) {
+        anchor.showTourStep(step);
+        this.stepShow$.next(step);
+      }
     }
-    anchor.showTourStep(step);
-    this.stepShow$.next(step);
   }
 
   private hideStep(step: T): void {

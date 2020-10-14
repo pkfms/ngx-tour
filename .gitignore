@@ -61,3 +61,4 @@ typings/
 dist/
 .ng_build/
 /.idea
+package-lock.json
