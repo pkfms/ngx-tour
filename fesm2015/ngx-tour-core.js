@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Injectable, Component, HostListener, NgModule } from '@angular/core';
 import { NavigationStart, Router, RouterModule } from '@angular/router';
+import { __awaiter } from 'tslib';
 import { Subject, merge } from 'rxjs';
-import { map, filter, first } from 'rxjs/operators';
+import { map, filter, first, takeUntil, take } from 'rxjs/operators';
 
 var TourState;
 (function (TourState) {
@@ -125,8 +126,9 @@ class TourService {
         this.goToStep(this.loadStep(stepId));
     }
     register(anchorId, anchor) {
-        if (!anchorId)
+        if (!anchorId) {
             return;
+        }
         if (this.anchors[anchorId]) {
             throw new Error('anchorId ' + anchorId + ' already registered!');
         }
@@ -134,8 +136,9 @@ class TourService {
         this.anchorRegister$.next(anchorId);
     }
     unregister(anchorId) {
-        if (!anchorId)
+        if (!anchorId) {
             return;
+        }
         delete this.anchors[anchorId];
         this.anchorUnregister$.next(anchorId);
     }
@@ -173,28 +176,39 @@ class TourService {
         }
     }
     setCurrentStep(step) {
-        if (this.currentStep) {
-            this.hideStep(this.currentStep);
-        }
-        this.currentStep = step;
-        this.showStep(this.currentStep);
-        this.router.events
-            .pipe(filter(event => event instanceof NavigationStart), first())
-            .subscribe(() => {
-            if (this.currentStep && this.currentStep.hasOwnProperty('route')) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.currentStep) {
                 this.hideStep(this.currentStep);
             }
+            this.currentStep = step;
+            yield this.showStep(this.currentStep);
+            this.router.events
+                .pipe(filter(event => event instanceof NavigationStart), first())
+                .subscribe(() => {
+                if (this.currentStep && this.currentStep.hasOwnProperty('route')) {
+                    this.hideStep(this.currentStep);
+                }
+            });
         });
     }
     showStep(step) {
-        const anchor = this.anchors[step && step.anchorId];
-        if (!anchor) {
-            console.warn('Can\'t attach to unregistered anchor with id ' + step.anchorId);
-            this.end();
-            return;
-        }
-        anchor.showTourStep(step);
-        this.stepShow$.next(step);
+        return __awaiter(this, void 0, void 0, function* () {
+            let anchor = this.anchors[step && step.anchorId];
+            if (anchor) {
+                // Anchor is registered, continue tour
+                anchor.showTourStep(step);
+                this.stepShow$.next(step);
+            }
+            else {
+                console.warn('Can\'t attach to unregistered anchor with id ' + step.anchorId);
+                // Wait for anchor to register itself and continue
+                anchor = yield this.anchorRegister$.pipe(filter(anchorId => anchorId === step.anchorId), map(anchorId => this.anchors[anchorId]), takeUntil(this.end$), take(1)).toPromise();
+                if (anchor) {
+                    anchor.showTourStep(step);
+                    this.stepShow$.next(step);
+                }
+            }
+        });
     }
     hideStep(step) {
         const anchor = this.anchors[step && step.anchorId];
