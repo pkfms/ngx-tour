@@ -1,10 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('ngx-tour-core'), require('@angular/router'), require('@angular/common'), require('@ng-bootstrap/ng-bootstrap'), require('withinviewport')) :
-    typeof define === 'function' && define.amd ? define('ngx-tour-ng-bootstrap', ['exports', '@angular/core', 'ngx-tour-core', '@angular/router', '@angular/common', '@ng-bootstrap/ng-bootstrap', 'withinviewport'], factory) :
-    (global = global || self, factory(global['ngx-tour-ng-bootstrap'] = {}, global.ng.core, global.ngxTourCore, global.ng.router, global.ng.common, global.ngBootstrap, global.withinviewport));
-}(this, (function (exports, i0, ngxTourCore, i1, common, ngBootstrap, withinviewport) { 'use strict';
-
-    withinviewport = withinviewport && Object.prototype.hasOwnProperty.call(withinviewport, 'default') ? withinviewport['default'] : withinviewport;
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('ngx-tour-core'), require('@angular/router'), require('@angular/common'), require('@ng-bootstrap/ng-bootstrap'), require('rxjs'), require('rxjs/operators')) :
+    typeof define === 'function' && define.amd ? define('ngx-tour-ng-bootstrap', ['exports', '@angular/core', 'ngx-tour-core', '@angular/router', '@angular/common', '@ng-bootstrap/ng-bootstrap', 'rxjs', 'rxjs/operators'], factory) :
+    (global = global || self, factory(global['ngx-tour-ng-bootstrap'] = {}, global.ng.core, global.ngxTourCore, global.ng.router, global.ng.common, global.ngBootstrap, global.rxjs, global.rxjs.operators));
+}(this, (function (exports, i0, ngxTourCore, i1, common, ngBootstrap, rxjs, operators) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -330,6 +328,61 @@
         { type: i0.Injectable }
     ];
 
+    var TourBackdropService = /** @class */ (function () {
+        function TourBackdropService(rendererFactory) {
+            this.renderer = rendererFactory.createRenderer(null, null);
+        }
+        TourBackdropService.prototype.show = function (targetElement) {
+            var boundingRect = targetElement.nativeElement.getBoundingClientRect();
+            if (!this.backdropElement) {
+                this.backdropElement = this.renderer.createElement('div');
+                this.renderer.addClass(this.backdropElement, 'ngx-tour_backdrop');
+                this.renderer.appendChild(document.body, this.backdropElement);
+            }
+            this.setStyles(boundingRect, targetElement.nativeElement);
+        };
+        TourBackdropService.prototype.close = function () {
+            if (this.backdropElement) {
+                this.renderer.removeChild(document.body, this.backdropElement);
+                this.backdropElement = null;
+            }
+        };
+        TourBackdropService.prototype.setStyles = function (boundingRect, targetElement) {
+            var e_1, _a;
+            var borderRadius = getComputedStyle(targetElement).borderRadius;
+            var styles = {
+                position: 'fixed',
+                width: boundingRect.width + 'px',
+                height: boundingRect.height + 'px',
+                top: boundingRect.top + 'px',
+                left: boundingRect.left + 'px',
+                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.7)',
+                zIndex: '100',
+                borderRadius: borderRadius
+            };
+            try {
+                for (var _b = __values(Object.keys(styles)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var name = _c.value;
+                    this.renderer.setStyle(this.backdropElement, name, styles[name]);
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+        };
+        return TourBackdropService;
+    }());
+    TourBackdropService.decorators = [
+        { type: i0.Injectable }
+    ];
+    TourBackdropService.ctorParameters = function () { return [
+        { type: i0.RendererFactory2 }
+    ]; };
+
     var TourAnchorNgBootstrapPopoverDirective = /** @class */ (function (_super) {
         __extends(TourAnchorNgBootstrapPopoverDirective, _super);
         function TourAnchorNgBootstrapPopoverDirective() {
@@ -341,15 +394,27 @@
         { type: i0.Directive, args: [{ selector: '[tourAnchor]' },] }
     ];
     var TourAnchorNgBootstrapDirective = /** @class */ (function () {
-        function TourAnchorNgBootstrapDirective(tourService, tourStepTemplate, element, popoverDirective) {
+        function TourAnchorNgBootstrapDirective(element, tourService, tourStepTemplate, tourBackdrop, popoverDirective, doc) {
+            this.element = element;
             this.tourService = tourService;
             this.tourStepTemplate = tourStepTemplate;
-            this.element = element;
+            this.tourBackdrop = tourBackdrop;
             this.popoverDirective = popoverDirective;
+            this.doc = doc;
+            this.tourWindowClass = 'ngx-tour-window';
+            this.document = doc;
             this.popoverDirective.autoClose = false;
             this.popoverDirective.triggers = '';
+            this.popoverDirective.popoverClass = this.tourWindowClass;
             this.popoverDirective.toggle = function () { };
         }
+        Object.defineProperty(TourAnchorNgBootstrapDirective.prototype, "tourWindow", {
+            get: function () {
+                return this.document.getElementsByClassName(this.tourWindowClass).item(0);
+            },
+            enumerable: false,
+            configurable: true
+        });
         TourAnchorNgBootstrapDirective.prototype.ngOnInit = function () {
             this.tourService.register(this.tourAnchor, this);
         };
@@ -357,6 +422,7 @@
             this.tourService.unregister(this.tourAnchor);
         };
         TourAnchorNgBootstrapDirective.prototype.showTourStep = function (step) {
+            var _this = this;
             this.isActive = true;
             this.popoverDirective.ngbPopover = this.tourStepTemplate.template;
             this.popoverDirective.popoverTitle = step.title;
@@ -367,19 +433,34 @@
             step.prevBtnTitle = step.prevBtnTitle || 'Prev';
             step.nextBtnTitle = step.nextBtnTitle || 'Next';
             step.endBtnTitle = step.endBtnTitle || 'End';
+            // Scroll the tour window into view after ngbPopover is opened
+            this.popoverDirective.shown.subscribe(function () {
+                if (!step.preventScrolling) {
+                    console.log('scrolling into view', _this.tourWindow);
+                    _this.element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+            // Open the tour window
             this.popoverDirective.open({ step: step });
-            if (!step.preventScrolling) {
-                if (!withinviewport(this.element.nativeElement, { sides: 'bottom' })) {
-                    this.element.nativeElement.scrollIntoView(false);
-                }
-                else if (!withinviewport(this.element.nativeElement, { sides: 'left top right' })) {
-                    this.element.nativeElement.scrollIntoView(true);
-                }
+            // Set a backdrop that highlights the tour anchor element or a custom input element
+            if (step.enableBackdrop) {
+                this.tourBackdrop.show(this.element);
+                // Adjust the backdrop position on scroll
+                rxjs.fromEvent(window, 'scroll').pipe(operators.takeUntil(this.tourService.stepHide$), operators.tap(function () {
+                    _this.tourBackdrop.close();
+                    _this.tourBackdrop.show(_this.element);
+                })).subscribe();
+            }
+            else {
+                this.tourBackdrop.close();
             }
         };
         TourAnchorNgBootstrapDirective.prototype.hideTourStep = function () {
             this.isActive = false;
             this.popoverDirective.close();
+            if (this.tourService.getStatus() === ngxTourCore.TourState.OFF) {
+                this.tourBackdrop.close();
+            }
         };
         return TourAnchorNgBootstrapDirective;
     }());
@@ -389,10 +470,12 @@
                 },] }
     ];
     TourAnchorNgBootstrapDirective.ctorParameters = function () { return [
+        { type: i0.ElementRef },
         { type: NgbTourService },
         { type: TourStepTemplateService },
-        { type: i0.ElementRef },
-        { type: TourAnchorNgBootstrapPopoverDirective, decorators: [{ type: i0.Host }] }
+        { type: TourBackdropService },
+        { type: TourAnchorNgBootstrapPopoverDirective, decorators: [{ type: i0.Host }] },
+        { type: undefined, decorators: [{ type: i0.Inject, args: [common.DOCUMENT,] }] }
     ]; };
     TourAnchorNgBootstrapDirective.propDecorators = {
         tourAnchor: [{ type: i0.Input }],
@@ -440,6 +523,7 @@
                 ngModule: TourNgBootstrapModule,
                 providers: [
                     TourStepTemplateService,
+                    TourBackdropService,
                     ngxTourCore.TourService,
                     NgbTourService
                 ],
@@ -470,6 +554,7 @@
     exports.ɵa = NgbTourService;
     exports.ɵb = TourAnchorNgBootstrapPopoverDirective;
     exports.ɵc = TourStepTemplateService;
+    exports.ɵd = TourBackdropService;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

@@ -11,8 +11,7 @@
     "ngx-tour-core": "^4.2.0"
   },
   "dependencies": {
-    "tslib": "^2.0.0",
-    "withinviewport": "^2.0.0"
+    "tslib": "^2.0.0"
   },
   "main": "bundles/ngx-tour-ng-bootstrap.umd.js",
   "module": "fesm2015/ngx-tour-ng-bootstrap.js",
