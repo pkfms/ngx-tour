@@ -1,8 +1,10 @@
-import { Directive, ElementRef, Host, HostBinding, Input } from '@angular/core';
-import type {OnDestroy, OnInit} from '@angular/core';
+import { Directive, ElementRef, Host, HostBinding, Inject, Input } from '@angular/core';
+import type { OnDestroy, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { fromEvent } from 'rxjs';
+import { takeUntil, tap } from 'rxjs/operators';
 import { NgbPopover, Placement } from '@ng-bootstrap/ng-bootstrap';
 import { TourAnchorDirective, TourState } from 'ngx-tour-core';
-import withinviewport from 'withinviewport';
 import { NgbTourService } from './ng-bootstrap-tour.service';
 import { INgbStepOption } from './step-option.interface';
 import { TourStepTemplateService } from './tour-step-template.service';
@@ -15,10 +17,17 @@ export class TourAnchorNgBootstrapPopoverDirective extends NgbPopover { }
   selector: '[tourAnchor]',
 })
 export class TourAnchorNgBootstrapDirective implements OnInit, OnDestroy, TourAnchorDirective {
+  private tourWindowClass: string = 'ngx-tour-window';
+  private document: Document;
+
   @Input() public tourAnchor: string;
 
   @HostBinding('class.touranchor--is-active')
   public isActive: boolean;
+
+  get tourWindow(): HTMLElement {
+    return this.document.getElementsByClassName(this.tourWindowClass).item(0) as HTMLElement;
+  }
 
   constructor(
     private element: ElementRef,
@@ -26,10 +35,13 @@ export class TourAnchorNgBootstrapDirective implements OnInit, OnDestroy, TourAn
     private tourStepTemplate: TourStepTemplateService,
     private tourBackdrop: TourBackdropService,
     @Host() private popoverDirective: TourAnchorNgBootstrapPopoverDirective,
+    @Inject(DOCUMENT) private doc?: any
   ) {
+    this.document = doc;
+
     this.popoverDirective.autoClose = false;
     this.popoverDirective.triggers = '';
-    this.popoverDirective.popoverClass = 'ngx-tour-window';
+    this.popoverDirective.popoverClass = this.tourWindowClass;
     this.popoverDirective.toggle = () => { };
   }
 
@@ -53,17 +65,28 @@ export class TourAnchorNgBootstrapDirective implements OnInit, OnDestroy, TourAn
     step.nextBtnTitle = step.nextBtnTitle || 'Next';
     step.endBtnTitle = step.endBtnTitle || 'End';
 
-    this.popoverDirective.open({ step });
-    if (!step.preventScrolling) {
-      if (!withinviewport(this.element.nativeElement, { sides: 'bottom' })) {
-        (<HTMLElement>this.element.nativeElement).scrollIntoView(false);
-      } else if (!withinviewport(this.element.nativeElement, { sides: 'left top right' })) {
-        (<HTMLElement>this.element.nativeElement).scrollIntoView(true);
+    // Scroll the tour window into view after ngbPopover is opened
+    this.popoverDirective.shown.subscribe(() => {
+      if (!step.preventScrolling) {
+        console.log('scrolling into view', this.tourWindow);
+        (<HTMLElement>this.element.nativeElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }
+    });
 
+    // Open the tour window
+    this.popoverDirective.open({ step });
+
+    // Set a backdrop that highlights the tour anchor element or a custom input element
     if (step.enableBackdrop) {
       this.tourBackdrop.show(this.element);
+      // Adjust the backdrop position on scroll
+      fromEvent(window, 'scroll').pipe(
+        takeUntil(this.tourService.stepHide$),
+        tap(() => {
+          this.tourBackdrop.close();
+          this.tourBackdrop.show(this.element);
+        })
+      ).subscribe();
     } else {
       this.tourBackdrop.close();
     }
