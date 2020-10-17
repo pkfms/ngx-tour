@@ -17,7 +17,7 @@ export class TourAnchorNgBootstrapPopoverDirective extends NgbPopover { }
   selector: '[tourAnchor]',
 })
 export class TourAnchorNgBootstrapDirective implements OnInit, OnDestroy, TourAnchorDirective {
-  private tourWindowClass: string = 'ngx-tour-window';
+  private tourWindowClass = 'ngx-tour-window';
   private document: Document;
 
   @Input() public tourAnchor: string;
@@ -25,7 +25,7 @@ export class TourAnchorNgBootstrapDirective implements OnInit, OnDestroy, TourAn
   @HostBinding('class.touranchor--is-active')
   public isActive: boolean;
 
-  get tourWindow(): HTMLElement {
+  private get tourWindow(): HTMLElement {
     return this.document.getElementsByClassName(this.tourWindowClass).item(0) as HTMLElement;
   }
 
@@ -68,7 +68,6 @@ export class TourAnchorNgBootstrapDirective implements OnInit, OnDestroy, TourAn
     // Scroll the tour window into view after ngbPopover is opened
     this.popoverDirective.shown.subscribe(() => {
       if (!step.preventScrolling) {
-        console.log('scrolling into view', this.tourWindow);
         (<HTMLElement>this.element.nativeElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
