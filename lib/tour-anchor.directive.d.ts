@@ -1,4 +1,4 @@
-import { OnDestroy, AfterViewInit, ElementRef } from '@angular/core';
+import { OnDestroy, AfterViewInit, ElementRef, EventEmitter } from '@angular/core';
 import { ScrollDispatcher } from '@angular/cdk/scrolling';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { TourAnchorDirective } from 'ngx-tour-core';
@@ -14,15 +14,14 @@ export declare class TourAnchorNgBootstrapDirective implements OnDestroy, AfterV
     private tourService;
     private tourStepTemplate;
     private tourBackdrop;
-    private popoverDirective;
-    private doc?;
+    private popover;
     private tourWindowClass;
-    private document;
     private step;
     tourAnchor: string;
     focusedElement: ElementRef<HTMLElement>;
+    click: EventEmitter<void>;
     isActive: boolean;
-    constructor(element: ElementRef, scrollService: ScrollDispatcher, tourService: NgbTourService, tourStepTemplate: TourStepTemplateService, tourBackdrop: TourBackdropService, popoverDirective: TourAnchorNgBootstrapPopoverDirective, doc?: any);
+    constructor(element: ElementRef, scrollService: ScrollDispatcher, tourService: NgbTourService, tourStepTemplate: TourStepTemplateService, tourBackdrop: TourBackdropService, popover: TourAnchorNgBootstrapPopoverDirective);
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     showTourStep(step: INgbStepOption): void;

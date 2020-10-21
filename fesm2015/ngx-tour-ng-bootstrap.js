@@ -1,10 +1,11 @@
-import { ɵɵdefineInjectable, ɵɵinject, Injectable, RendererFactory2, Directive, ElementRef, Host, Inject, Input, HostBinding, Component, ViewEncapsulation, ViewChild, TemplateRef, ContentChild, NgModule } from '@angular/core';
+import { ɵɵdefineInjectable, ɵɵinject, Injectable, RendererFactory2, Directive, EventEmitter, ElementRef, Host, Input, Output, HostBinding, Component, ViewEncapsulation, ViewChild, TemplateRef, ContentChild, NgModule } from '@angular/core';
 import { TourService, TourState, TourHotkeyListenerComponent } from 'ngx-tour-core';
 import { Router } from '@angular/router';
-import { DOCUMENT, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NgbPopover, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { ScrollDispatcher, ScrollingModule } from '@angular/cdk/scrolling';
-import { takeUntil, tap } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+import { takeUntil, take, tap } from 'rxjs/operators';
 
 class NgbTourService extends TourService {
 }
@@ -25,19 +26,22 @@ class TourBackdropService {
     constructor(rendererFactory) {
         this.renderer = rendererFactory.createRenderer(null, null);
     }
+    get backdropElement() {
+        return this._backdropElement;
+    }
     show(targetElement) {
         const boundingRect = targetElement.nativeElement.getBoundingClientRect();
-        if (!this.backdropElement) {
-            this.backdropElement = this.renderer.createElement('div');
+        if (!this._backdropElement) {
+            this._backdropElement = this.renderer.createElement('div');
             this.renderer.addClass(this.backdropElement, 'ngx-tour_backdrop');
             this.renderer.appendChild(document.body, this.backdropElement);
         }
         this.setStyles(boundingRect, targetElement.nativeElement);
     }
     close() {
-        if (this.backdropElement) {
-            this.renderer.removeChild(document.body, this.backdropElement);
-            this.backdropElement = null;
+        if (this._backdropElement) {
+            this.renderer.removeChild(document.body, this._backdropElement);
+            this._backdropElement = null;
         }
     }
     setStyles(boundingRect, targetElement) {
@@ -53,7 +57,7 @@ class TourBackdropService {
             borderRadius: borderRadius
         };
         for (const name of Object.keys(styles)) {
-            this.renderer.setStyle(this.backdropElement, name, styles[name]);
+            this.renderer.setStyle(this._backdropElement, name, styles[name]);
         }
     }
 }
@@ -73,34 +77,34 @@ class TourAnchorNgBootstrapDirective {
     /* private get tourWindow(): HTMLElement {
       return this.document.getElementsByClassName(this.tourWindowClass).item(0) as HTMLElement;
     } */
-    constructor(element, scrollService, tourService, tourStepTemplate, tourBackdrop, popoverDirective, doc) {
+    constructor(element, scrollService, tourService, tourStepTemplate, tourBackdrop, popover) {
         this.element = element;
         this.scrollService = scrollService;
         this.tourService = tourService;
         this.tourStepTemplate = tourStepTemplate;
         this.tourBackdrop = tourBackdrop;
-        this.popoverDirective = popoverDirective;
-        this.doc = doc;
+        this.popover = popover;
         this.tourWindowClass = 'ngx-tour-window';
-        this.document = doc;
-        this.popoverDirective.autoClose = false;
-        this.popoverDirective.triggers = '';
-        this.popoverDirective.popoverClass = this.tourWindowClass;
-        this.popoverDirective.toggle = () => { };
+        this.click = new EventEmitter();
+        this.popover.autoClose = false;
+        this.popover.triggers = '';
+        this.popover.popoverClass = this.tourWindowClass;
+        this.popover.toggle = () => { };
     }
     ngAfterViewInit() {
         this.tourService.register(this.tourAnchor, this);
     }
     ngOnDestroy() {
         this.tourService.unregister(this.tourAnchor);
+        this.click.complete();
     }
     showTourStep(step) {
         this.step = step;
         this.isActive = true;
-        this.popoverDirective.ngbPopover = this.tourStepTemplate.template;
-        this.popoverDirective.popoverTitle = step.title;
-        this.popoverDirective.container = 'body';
-        this.popoverDirective.placement = (step.placement || 'top')
+        this.popover.ngbPopover = this.tourStepTemplate.template;
+        this.popover.popoverTitle = step.title;
+        this.popover.container = 'body';
+        this.popover.placement = (step.placement || 'top')
             .replace('before', 'left').replace('after', 'right')
             .replace('below', 'bottom').replace('above', 'top');
         step.prevBtnTitle = step.prevBtnTitle || 'Prev';
@@ -112,7 +116,7 @@ class TourAnchorNgBootstrapDirective {
     hideTourStep() {
         this.step = null;
         this.isActive = false;
-        this.popoverDirective.close();
+        this.popover.close();
         if (this.tourService.getStatus() === TourState.OFF) {
             this.tourBackdrop.close();
         }
@@ -120,12 +124,17 @@ class TourAnchorNgBootstrapDirective {
     /** Open the tour window with ngb-popover */
     openTourWindow() {
         // Scroll the tour window into view after ngbPopover is opened
-        this.popoverDirective.shown.subscribe(() => {
+        this.popover.shown.pipe(takeUntil(this.tourService.stepHide$)).subscribe(() => {
             if (!this.step.preventScrolling) {
                 this.element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'center' });
             }
         });
-        this.popoverDirective.open({ step: this.step });
+        if (this.popover.isOpen()) {
+            this.popover.hidden.pipe(take(1), tap(() => this.popover.open({ step: this.step }))).subscribe();
+        }
+        else {
+            this.popover.open({ step: this.step });
+        }
     }
     /** Set a backdrop that highlights the tour anchor element or a custom input element */
     setBackdrop() {
@@ -134,6 +143,10 @@ class TourAnchorNgBootstrapDirective {
             this.tourBackdrop.show(targetElement);
             // Adjust the backdrop position on scroll
             this.scrollService.ancestorScrolled(this.element, 0).pipe(takeUntil(this.tourService.stepHide$), tap(() => this.tourBackdrop.show(targetElement))).subscribe();
+            if (this.click.observers.length) {
+                this.tourBackdrop.backdropElement.classList.add('clickable');
+            }
+            fromEvent(this.tourBackdrop.backdropElement, 'click').pipe(tap(() => this.click.next())).subscribe();
         }
         else {
             this.tourBackdrop.close();
@@ -151,12 +164,12 @@ TourAnchorNgBootstrapDirective.ctorParameters = () => [
     { type: NgbTourService },
     { type: TourStepTemplateService },
     { type: TourBackdropService },
-    { type: TourAnchorNgBootstrapPopoverDirective, decorators: [{ type: Host }] },
-    { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
+    { type: TourAnchorNgBootstrapPopoverDirective, decorators: [{ type: Host }] }
 ];
 TourAnchorNgBootstrapDirective.propDecorators = {
     tourAnchor: [{ type: Input }],
     focusedElement: [{ type: Input }],
+    click: [{ type: Output, args: ['tourAnchorClick',] }],
     isActive: [{ type: HostBinding, args: ['class.touranchor--is-active',] }]
 };
 
