@@ -4,7 +4,11 @@ import type { Renderer2 } from '@angular/core';
 @Injectable()
 export class TourBackdropService {
   private renderer: Renderer2;
-  private backdropElement: HTMLElement;
+  private _backdropElement: HTMLElement;
+
+  get backdropElement(): HTMLElement {
+    return this._backdropElement;
+  }
 
   constructor(rendererFactory: RendererFactory2) {
     this.renderer = rendererFactory.createRenderer(null, null);
@@ -13,8 +17,8 @@ export class TourBackdropService {
   public show(targetElement: ElementRef) {
     const boundingRect = targetElement.nativeElement.getBoundingClientRect();
 
-    if (!this.backdropElement) {
-      this.backdropElement = this.renderer.createElement('div');
+    if (!this._backdropElement) {
+      this._backdropElement = this.renderer.createElement('div');
       this.renderer.addClass(this.backdropElement, 'ngx-tour_backdrop');
       this.renderer.appendChild(document.body, this.backdropElement);
     }
@@ -23,9 +27,9 @@ export class TourBackdropService {
   }
 
   public close() {
-    if (this.backdropElement) {
-      this.renderer.removeChild(document.body, this.backdropElement);
-      this.backdropElement = null;
+    if (this._backdropElement) {
+      this.renderer.removeChild(document.body, this._backdropElement);
+      this._backdropElement = null;
     }
   }
 
@@ -44,7 +48,7 @@ export class TourBackdropService {
     };
 
     for (const name of Object.keys(styles)) {
-      this.renderer.setStyle(this.backdropElement, name, styles[name]);
+      this.renderer.setStyle(this._backdropElement, name, styles[name]);
     }
   }
 }
