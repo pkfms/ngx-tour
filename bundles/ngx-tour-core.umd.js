@@ -322,13 +322,7 @@
             this.resume$ = new rxjs.Subject();
             this.anchorRegister$ = new rxjs.Subject();
             this.anchorUnregister$ = new rxjs.Subject();
-            this.events$ = rxjs.merge(this.stepShow$.pipe(operators.map(function (value) { return ({ name: 'stepShow', value: value }); })), this.stepHide$.pipe(operators.map(function (value) { return ({ name: 'stepHide', value: value }); })), this.initialize$.pipe(operators.map(function (value) { return ({ name: 'initialize', value: value }); })), this.start$.pipe(operators.map(function (value) { return ({ name: 'start', value: value }); })), this.end$.pipe(operators.map(function (value) { return ({ name: 'end', value: value }); })), this.pause$.pipe(operators.map(function (value) { return ({ name: 'pause', value: value }); })), this.resume$.pipe(operators.map(function (value) { return ({ name: 'resume', value: value }); })), this.anchorRegister$.pipe(operators.map(function (value) { return ({
-                name: 'anchorRegister',
-                value: value
-            }); })), this.anchorUnregister$.pipe(operators.map(function (value) { return ({
-                name: 'anchorUnregister',
-                value: value
-            }); })));
+            this.events$ = rxjs.merge(this.stepShow$.pipe(operators.map(function (value) { return ({ name: 'stepShow', value: value }); })), this.stepHide$.pipe(operators.map(function (value) { return ({ name: 'stepHide', value: value }); })), this.initialize$.pipe(operators.map(function (value) { return ({ name: 'initialize', value: value }); })), this.start$.pipe(operators.map(function (value) { return ({ name: 'start', value: value }); })), this.end$.pipe(operators.map(function (value) { return ({ name: 'end', value: value }); })), this.pause$.pipe(operators.map(function (value) { return ({ name: 'pause', value: value }); })), this.resume$.pipe(operators.map(function (value) { return ({ name: 'resume', value: value }); })), this.anchorRegister$.pipe(operators.map(function (value) { return ({ name: 'anchorRegister', value: value }); })), this.anchorUnregister$.pipe(operators.map(function (value) { return ({ name: 'anchorUnregister', value: value }); })));
             this.steps = [];
             this.anchors = {};
             this.status = exports.TourState.OFF;

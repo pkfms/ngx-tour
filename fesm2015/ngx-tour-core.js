@@ -23,13 +23,7 @@ class TourService {
         this.resume$ = new Subject();
         this.anchorRegister$ = new Subject();
         this.anchorUnregister$ = new Subject();
-        this.events$ = merge(this.stepShow$.pipe(map(value => ({ name: 'stepShow', value }))), this.stepHide$.pipe(map(value => ({ name: 'stepHide', value }))), this.initialize$.pipe(map(value => ({ name: 'initialize', value }))), this.start$.pipe(map(value => ({ name: 'start', value }))), this.end$.pipe(map(value => ({ name: 'end', value }))), this.pause$.pipe(map(value => ({ name: 'pause', value }))), this.resume$.pipe(map(value => ({ name: 'resume', value }))), this.anchorRegister$.pipe(map(value => ({
-            name: 'anchorRegister',
-            value
-        }))), this.anchorUnregister$.pipe(map(value => ({
-            name: 'anchorUnregister',
-            value
-        }))));
+        this.events$ = merge(this.stepShow$.pipe(map(value => ({ name: 'stepShow', value }))), this.stepHide$.pipe(map(value => ({ name: 'stepHide', value }))), this.initialize$.pipe(map(value => ({ name: 'initialize', value }))), this.start$.pipe(map(value => ({ name: 'start', value }))), this.end$.pipe(map(value => ({ name: 'end', value }))), this.pause$.pipe(map(value => ({ name: 'pause', value }))), this.resume$.pipe(map(value => ({ name: 'resume', value }))), this.anchorRegister$.pipe(map(value => ({ name: 'anchorRegister', value }))), this.anchorUnregister$.pipe(map(value => ({ name: 'anchorUnregister', value }))));
         this.steps = [];
         this.anchors = {};
         this.status = TourState.OFF;
