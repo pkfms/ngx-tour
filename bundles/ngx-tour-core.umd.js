@@ -329,6 +329,9 @@
             this.isHotKeysEnabled = true;
         }
         TourService.prototype.initialize = function (steps, stepDefaults) {
+            if (this.status !== exports.TourState.OFF) {
+                this.end();
+            }
             if (steps && steps.length > 0) {
                 this.status = exports.TourState.OFF;
                 this.steps = steps.map(function (step) { return Object.assign({}, stepDefaults, step); });

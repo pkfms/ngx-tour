@@ -30,6 +30,9 @@ class TourService {
         this.isHotKeysEnabled = true;
     }
     initialize(steps, stepDefaults) {
+        if (this.status !== TourState.OFF) {
+            this.end();
+        }
         if (steps && steps.length > 0) {
             this.status = TourState.OFF;
             this.steps = steps.map(step => Object.assign({}, stepDefaults, step));
