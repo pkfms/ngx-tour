@@ -60,6 +60,10 @@ export class TourService<T extends IStepOption = IStepOption> {
   constructor(private router: Router) {}
 
   public initialize(steps: T[], stepDefaults?: T): void {
+    if (this.status !== TourState.OFF) {
+      this.end();
+    }
+
     if (steps && steps.length > 0) {
       this.status = TourState.OFF;
       this.steps = steps.map(step => Object.assign({}, stepDefaults, step));
