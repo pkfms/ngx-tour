@@ -169,7 +169,7 @@ class TourService {
             return this.steps[stepId];
         }
         else {
-            return this.steps.find(step => step.stepId === stepId);
+            return this.steps.find(step => step.anchorId === stepId);
         }
     }
     setCurrentStep(step) {
@@ -190,19 +190,22 @@ class TourService {
     }
     showStep(step) {
         return __awaiter(this, void 0, void 0, function* () {
+            const showTourStep = () => {
+                anchor.showTourStep(step);
+                this.status = TourState.ON;
+                this.stepShow$.next(step);
+            };
             let anchor = this.anchors[step && step.anchorId];
             if (anchor) {
                 // Anchor is registered, continue tour
-                anchor.showTourStep(step);
-                this.stepShow$.next(step);
+                showTourStep();
             }
             else {
                 console.warn('Can\'t attach to unregistered anchor with id ' + step.anchorId);
                 // Wait for anchor to register itself and continue
                 anchor = yield this.anchorRegister$.pipe(filter(anchorId => anchorId === step.anchorId), map(anchorId => this.anchors[anchorId]), takeUntil(this.end$), take(1)).toPromise();
                 if (anchor) {
-                    anchor.showTourStep(step);
-                    this.stepShow$.next(step);
+                    showTourStep();
                 }
             }
         });

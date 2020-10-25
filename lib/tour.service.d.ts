@@ -3,7 +3,6 @@ import type { UrlSegment } from '@angular/router';
 import { TourAnchorDirective } from './tour-anchor.directive';
 import { Subject, Observable } from 'rxjs';
 export interface IStepOption {
-    stepId?: string;
     anchorId?: string;
     title?: string;
     content?: string;

@@ -470,7 +470,7 @@
                 return this.steps[stepId];
             }
             else {
-                return this.steps.find(function (step) { return step.stepId === stepId; });
+                return this.steps.find(function (step) { return step.anchorId === stepId; });
             }
         };
         TourService.prototype.setCurrentStep = function (step) {
@@ -500,16 +500,20 @@
         };
         TourService.prototype.showStep = function (step) {
             return __awaiter(this, void 0, void 0, function () {
-                var anchor;
+                var showTourStep, anchor;
                 var _this = this;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
+                            showTourStep = function () {
+                                anchor.showTourStep(step);
+                                _this.status = exports.TourState.ON;
+                                _this.stepShow$.next(step);
+                            };
                             anchor = this.anchors[step && step.anchorId];
                             if (!anchor) return [3 /*break*/, 1];
                             // Anchor is registered, continue tour
-                            anchor.showTourStep(step);
-                            this.stepShow$.next(step);
+                            showTourStep();
                             return [3 /*break*/, 3];
                         case 1:
                             console.warn('Can\'t attach to unregistered anchor with id ' + step.anchorId);
@@ -518,8 +522,7 @@
                             // Wait for anchor to register itself and continue
                             anchor = _a.sent();
                             if (anchor) {
-                                anchor.showTourStep(step);
-                                this.stepShow$.next(step);
+                                showTourStep();
                             }
                             _a.label = 3;
                         case 3: return [2 /*return*/];
