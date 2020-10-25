@@ -246,11 +246,16 @@ export class TourService<T extends IStepOption = IStepOption> {
   }
 
   private async showStep(step: T): Promise<void> {
+    const showTourStep = () => {
+      anchor.showTourStep(step);
+      this.status = TourState.ON;
+      this.stepShow$.next(step);
+    };
+
     let anchor = this.anchors[step && step.anchorId];
     if (anchor) {
       // Anchor is registered, continue tour
-      anchor.showTourStep(step);
-      this.stepShow$.next(step);
+      showTourStep();
     } else {
       console.warn('Can\'t attach to unregistered anchor with id ' + step.anchorId);
       // Wait for anchor to register itself and continue
@@ -262,8 +267,7 @@ export class TourService<T extends IStepOption = IStepOption> {
       ).toPromise();
 
       if (anchor) {
-        anchor.showTourStep(step);
-        this.stepShow$.next(step);
+        showTourStep();
       }
     }
   }
