@@ -7,7 +7,6 @@ import { Subject, Observable, merge as mergeStatic } from 'rxjs';
 import { first, map, filter, take, takeUntil } from 'rxjs/operators';
 
 export interface IStepOption {
-  stepId?: string;
   anchorId?: string;
   title?: string;
   content?: string;
@@ -226,7 +225,7 @@ export class TourService<T extends IStepOption = IStepOption> {
     if (typeof stepId === 'number') {
       return this.steps[stepId];
     } else {
-      return this.steps.find(step => step.stepId === stepId);
+      return this.steps.find(step => step.anchorId === stepId);
     }
   }
 
