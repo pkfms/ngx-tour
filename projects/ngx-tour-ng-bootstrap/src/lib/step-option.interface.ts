@@ -1,10 +1,8 @@
 import { IStepOption } from 'ngx-tour-core';
-import { Placement } from '@ng-bootstrap/ng-bootstrap';
-
-type StepPlacement = Placement | 'after' | 'after-top' | 'after-bottom' | 'top-after' | 'top-before' | 'bottom-after' | 'bottom-before' | 'before' | 'before-top' | 'before-bottom'| 'below' | 'above';
+import { PlacementArray } from '@ng-bootstrap/ng-bootstrap/util/positioning';
 
 export interface INgbStepOption extends IStepOption {
-    placement?: StepPlacement;
+    placement?: PlacementArray;
     /** Display a backdrop, highlighting the tour anchor element */
     enableBackdrop?: boolean;
     /** This step requires a user action (like clicking the tour anchor element), and does not display a next button */

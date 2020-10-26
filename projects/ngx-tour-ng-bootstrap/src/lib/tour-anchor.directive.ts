@@ -1,9 +1,8 @@
-import { OnDestroy, AfterViewInit, Directive, ElementRef, Host, HostBinding, Inject, Input, Output, EventEmitter } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { OnDestroy, AfterViewInit, Directive, ElementRef, Host, HostBinding, Input, Output, EventEmitter } from '@angular/core';
 import { ScrollDispatcher } from '@angular/cdk/scrolling';
 import { fromEvent } from 'rxjs';
 import { take, takeUntil, tap } from 'rxjs/operators';
-import { NgbPopover, Placement } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { TourAnchorDirective, TourState } from 'ngx-tour-core';
 import { NgbTourService } from './ng-bootstrap-tour.service';
 import { INgbStepOption } from './step-option.interface';
@@ -60,9 +59,7 @@ export class TourAnchorNgBootstrapDirective implements OnDestroy, AfterViewInit,
     this.popover.ngbPopover = this.tourStepTemplate.template;
     this.popover.popoverTitle = step.title;
     this.popover.container =  'body';
-    this.popover.placement = <Placement>(step.placement || 'top')
-      .replace('before', 'left').replace('after', 'right')
-      .replace('below', 'bottom').replace('above', 'top');
+    this.popover.placement = step.placement || 'auto';
     step.prevBtnTitle = step.prevBtnTitle || 'Prev';
     step.nextBtnTitle = step.nextBtnTitle || 'Next';
     step.endBtnTitle = step.endBtnTitle || 'End';
