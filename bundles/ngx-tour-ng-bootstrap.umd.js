@@ -431,9 +431,7 @@
             this.popover.ngbPopover = this.tourStepTemplate.template;
             this.popover.popoverTitle = step.title;
             this.popover.container = 'body';
-            this.popover.placement = (step.placement || 'top')
-                .replace('before', 'left').replace('after', 'right')
-                .replace('below', 'bottom').replace('above', 'top');
+            this.popover.placement = step.placement || 'auto';
             step.prevBtnTitle = step.prevBtnTitle || 'Prev';
             step.nextBtnTitle = step.nextBtnTitle || 'Next';
             step.endBtnTitle = step.endBtnTitle || 'End';
