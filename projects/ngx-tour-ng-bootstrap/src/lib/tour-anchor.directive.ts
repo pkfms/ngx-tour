@@ -84,7 +84,7 @@ export class TourAnchorNgBootstrapDirective implements OnDestroy, AfterViewInit,
       takeUntil(this.tourService.stepHide$)
     ).subscribe(() => {
       if (!this.step.preventScrolling) {
-        (<HTMLElement>this.element.nativeElement).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'center' });
+        (<HTMLElement>this.element.nativeElement).scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
       }
     });
 
