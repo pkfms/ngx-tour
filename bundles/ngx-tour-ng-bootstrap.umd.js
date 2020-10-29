@@ -452,7 +452,7 @@
             // Scroll the tour window into view after ngbPopover is opened
             this.popover.shown.pipe(operators.takeUntil(this.tourService.stepHide$)).subscribe(function () {
                 if (!_this.step.preventScrolling) {
-                    _this.element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'center' });
+                    _this.element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
                 }
             });
             if (this.popover.isOpen()) {

@@ -124,7 +124,7 @@ class TourAnchorNgBootstrapDirective {
         // Scroll the tour window into view after ngbPopover is opened
         this.popover.shown.pipe(takeUntil(this.tourService.stepHide$)).subscribe(() => {
             if (!this.step.preventScrolling) {
-                this.element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'center' });
+                this.element.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
             }
         });
         if (this.popover.isOpen()) {
