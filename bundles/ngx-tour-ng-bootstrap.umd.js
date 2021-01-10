@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('ngx-tour-core'), require('@angular/router'), require('@angular/common'), require('@ng-bootstrap/ng-bootstrap'), require('@angular/cdk/scrolling'), require('rxjs'), require('rxjs/operators')) :
     typeof define === 'function' && define.amd ? define('ngx-tour-ng-bootstrap', ['exports', '@angular/core', 'ngx-tour-core', '@angular/router', '@angular/common', '@ng-bootstrap/ng-bootstrap', '@angular/cdk/scrolling', 'rxjs', 'rxjs/operators'], factory) :
-    (global = global || self, factory(global['ngx-tour-ng-bootstrap'] = {}, global.ng.core, global.ngxTourCore, global.ng.router, global.ng.common, global.ngBootstrap, global.ng.cdk.scrolling, global.rxjs, global.rxjs.operators));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['ngx-tour-ng-bootstrap'] = {}, global.ng.core, global.ngxTourCore, global.ng.router, global.ng.common, global.ngBootstrap, global.ng.cdk.scrolling, global.rxjs, global.rxjs.operators));
 }(this, (function (exports, i0, ngxTourCore, i1, common, ngBootstrap, scrolling, rxjs, operators) { 'use strict';
 
     /*! *****************************************************************************
