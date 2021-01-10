@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/core'), require('@angular/router'), require('rxjs'), require('rxjs/operators')) :
     typeof define === 'function' && define.amd ? define('ngx-tour-core', ['exports', '@angular/common', '@angular/core', '@angular/router', 'rxjs', 'rxjs/operators'], factory) :
-    (global = global || self, factory(global['ngx-tour-core'] = {}, global.ng.common, global.ng.core, global.ng.router, global.rxjs, global.rxjs.operators));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['ngx-tour-core'] = {}, global.ng.common, global.ng.core, global.ng.router, global.rxjs, global.rxjs.operators));
 }(this, (function (exports, common, core, router, rxjs, operators) { 'use strict';
 
     /*! *****************************************************************************
