@@ -38,7 +38,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -129,7 +128,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ngx-tour-console/tsconfig.lib.json",
             "project": "projects/ngx-tour-console/ng-package.json"
@@ -170,7 +169,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ngx-tour-core/tsconfig.lib.json",
             "project": "projects/ngx-tour-core/ng-package.json"
@@ -211,7 +210,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ngx-tour-md-menu/tsconfig.lib.json",
             "project": "projects/ngx-tour-md-menu/ng-package.json"
@@ -252,7 +251,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ngx-tour-ng-bootstrap/tsconfig.lib.json",
             "project": "projects/ngx-tour-ng-bootstrap/ng-package.json"
@@ -293,7 +292,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ngx-tour-ngx-bootstrap/tsconfig.lib.json",
             "project": "projects/ngx-tour-ngx-bootstrap/ng-package.json"
@@ -334,7 +333,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ngx-tour-ngx-popper/tsconfig.lib.json",
             "project": "projects/ngx-tour-ngx-popper/ng-package.json"
