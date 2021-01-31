@@ -452,6 +452,9 @@
                 this.end();
                 return;
             }
+            if (step === this.currentStep) {
+                return;
+            }
             var navigatePromise = new Promise(function (resolve) { return resolve(true); });
             if (step.route !== undefined && typeof step.route === 'string') {
                 navigatePromise = this.router.navigateByUrl(step.route);

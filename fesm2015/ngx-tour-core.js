@@ -151,6 +151,9 @@ class TourService {
             this.end();
             return;
         }
+        if (step === this.currentStep) {
+            return;
+        }
         let navigatePromise = new Promise(resolve => resolve(true));
         if (step.route !== undefined && typeof step.route === 'string') {
             navigatePromise = this.router.navigateByUrl(step.route);
