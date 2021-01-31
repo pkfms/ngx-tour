@@ -206,6 +206,11 @@ export class TourService<T extends IStepOption = IStepOption> {
       this.end();
       return;
     }
+
+    if (step === this.currentStep) {
+      return;
+    }
+
     let navigatePromise: Promise<boolean> = new Promise(resolve =>
       resolve(true)
     );
