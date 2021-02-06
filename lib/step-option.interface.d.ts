@@ -1,7 +1,7 @@
 import { IStepOption } from 'ngx-tour-core';
-import { PlacementArray } from '@ng-bootstrap/ng-bootstrap/util/positioning';
+import { TourPlacementArray } from './placement.interface';
 export interface INgbStepOption extends IStepOption {
-    placement?: PlacementArray;
+    placement?: TourPlacementArray;
     /** Display a backdrop, highlighting the tour anchor element */
     enableBackdrop?: boolean;
     /** This step requires a user action (like clicking the tour anchor element), and does not display a next button */
