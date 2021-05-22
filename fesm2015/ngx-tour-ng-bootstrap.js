@@ -1,6 +1,7 @@
-import { ɵɵdefineInjectable, ɵɵinject, Injectable, RendererFactory2, Directive, EventEmitter, ElementRef, Host, Input, Output, HostBinding, Component, ViewEncapsulation, ViewChild, TemplateRef, ContentChild, NgModule } from '@angular/core';
+import * as i0 from '@angular/core';
+import { Injectable, RendererFactory2, Directive, EventEmitter, ElementRef, Host, Input, Output, HostBinding, Component, ViewEncapsulation, ViewChild, TemplateRef, ContentChild, NgModule } from '@angular/core';
 import { TourService, TourState, TourHotkeyListenerComponent } from 'ngx-tour-core';
-import { Router } from '@angular/router';
+import * as i1 from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgbPopover, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { ScrollDispatcher, ScrollingModule } from '@angular/cdk/scrolling';
@@ -9,7 +10,7 @@ import { takeUntil, take, tap } from 'rxjs/operators';
 
 class NgbTourService extends TourService {
 }
-NgbTourService.ɵprov = ɵɵdefineInjectable({ factory: function NgbTourService_Factory() { return new NgbTourService(ɵɵinject(Router)); }, token: NgbTourService, providedIn: "root" });
+NgbTourService.ɵprov = i0.ɵɵdefineInjectable({ factory: function NgbTourService_Factory() { return new NgbTourService(i0.ɵɵinject(i1.Router)); }, token: NgbTourService, providedIn: "root" });
 NgbTourService.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
